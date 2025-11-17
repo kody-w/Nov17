@@ -7,12 +7,12 @@
 Edit `docs/index.html` and update the GitHub repository information:
 
 ```javascript
-// Find this section near line 400
+// Find this section near line 495
 const GITHUB_USER = 'kody-w';
-const REPO_NAME = 'claude-code-experiments'; // Update this to your actual repo name
+const REPO_NAME = 'Nov17';
 ```
 
-Replace `REPO_NAME` with your actual repository name.
+This is already configured correctly for your repository.
 
 ### 2. Enable GitHub Pages
 
@@ -27,7 +27,7 @@ Replace `REPO_NAME` with your actual repository name.
 
 GitHub will build and deploy your site. This usually takes 1-2 minutes.
 
-Your site will be available at: `https://kody-w.github.io/REPO_NAME/`
+Your site will be available at: `https://kody-w.github.io/Nov17/`
 
 ## Adding New Experiments
 
@@ -103,7 +103,7 @@ Edit the About section content directly in the HTML to describe your specific fo
 Once deployed, you can link to your portfolio from kodyw.com:
 
 ```markdown
-Check out my [code experiments portfolio](https://kody-w.github.io/REPO_NAME/)
+Check out my [code experiments portfolio](https://kody-w.github.io/Nov17/)
 ```
 
 Or add a menu item, footer link, etc.

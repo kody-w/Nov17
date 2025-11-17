@@ -15,7 +15,7 @@ This folder contains the GitHub Pages site for showcasing experiments from this 
    - Save
 
 3. **Access Your Site**
-   - URL: `https://YOUR_USERNAME.github.io/REPO_NAME/`
+   - URL: `https://kody-w.github.io/Nov17/`
    - Usually deploys in 1-2 minutes
 
 ## Adding Experiments
@@ -57,7 +57,7 @@ See [DEPLOYMENT.md](DEPLOYMENT.md) for details on:
 Once deployed, link from kodyw.com:
 
 ```markdown
-Check out my [code experiments](https://kody-w.github.io/REPO_NAME/)
+Check out my [code experiments](https://kody-w.github.io/Nov17/)
 ```
 
 Or add to your blog's navigation menu.

@@ -4,7 +4,7 @@ A streamlined workspace for rapid prototyping and experimentation with Claude Co
 
 > **New to this workspace?** Check out [GETTING_STARTED.md](GETTING_STARTED.md) for setup instructions and Claude Code usage tips!
 
-> **Portfolio Site**: View experiments online at the [GitHub Pages portfolio](https://kody-w.github.io/REPO_NAME/) (update REPO_NAME with your actual repo)
+> **Portfolio Site**: View experiments online at the [GitHub Pages portfolio](https://kody-w.github.io/Nov17/)
 
 ## 🎯 Purpose
 
