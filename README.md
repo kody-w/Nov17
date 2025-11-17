@@ -2,11 +2,21 @@
 
 A streamlined workspace for rapid prototyping and experimentation with Claude Code.
 
+## 🎯 Using This Template
+
+**Just created this from the template?** Run the setup script:
+```bash
+python3 setup.py
+```
+Then see [TEMPLATE_USAGE.md](TEMPLATE_USAGE.md) for complete instructions.
+
+---
+
 > **New to this workspace?** Check out [GETTING_STARTED.md](GETTING_STARTED.md) for setup instructions and Claude Code usage tips!
 
 > **Portfolio Site**: View experiments online at the [GitHub Pages portfolio](https://kody-w.github.io/Nov17/)
 
-## 🎯 Purpose
+## 📖 Purpose
 
 This workspace is designed for quick iterations and testing ideas without the overhead of full project setup. Perfect for proof-of-concepts, algorithm testing, data exploration, and API experimentation.
 

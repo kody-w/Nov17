@@ -6,6 +6,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 This is a rapid experimentation workspace for prototyping and testing ideas without full project setup overhead. Perfect for proof-of-concepts, algorithm testing, data exploration, and API experimentation.
 
+**Note**: This is a GitHub template repository. New users should run `python3 setup.py` to configure it for their repository.
+
 ## Directory Structure
 
 ```

@@ -2,6 +2,11 @@
 
 This workspace is optimized for rapid prototyping and experimentation with Claude Code.
 
+## Template Setup
+
+**First time using this template?** Run `python3 setup.py` to configure for your repository.
+This updates all GitHub Pages links and repository references automatically.
+
 ## Workspace Structure
 - `experiments/` - Quick experiments and proof-of-concepts
 - `sandbox/` - Temporary testing area (git-ignored)
