@@ -4,6 +4,8 @@ A streamlined workspace for rapid prototyping and experimentation with Claude Co
 
 > **New to this workspace?** Check out [GETTING_STARTED.md](GETTING_STARTED.md) for setup instructions and Claude Code usage tips!
 
+> **Portfolio Site**: View experiments online at the [GitHub Pages portfolio](https://kody-w.github.io/REPO_NAME/) (update REPO_NAME with your actual repo)
+
 ## 🎯 Purpose
 
 This workspace is designed for quick iterations and testing ideas without the overhead of full project setup. Perfect for proof-of-concepts, algorithm testing, data exploration, and API experimentation.
@@ -16,6 +18,7 @@ This workspace is designed for quick iterations and testing ideas without the ov
 ├── sandbox/         # Temporary testing area (git-ignored)
 ├── utils/           # Reusable utilities and helpers
 ├── templates/       # Quick-start templates
+├── docs/            # GitHub Pages portfolio site
 └── .github/         # Workspace configuration
 ```
 
@@ -25,6 +28,7 @@ This workspace is designed for quick iterations and testing ideas without the ov
 - **`sandbox/`**: Temporary workspace for quick tests (automatically git-ignored)
 - **`utils/`**: Common utilities like timers, loggers, and test helpers
 - **`templates/`**: Pre-configured templates for common tasks
+- **`docs/`**: GitHub Pages portfolio website showcasing experiments
 
 ## 🚀 Quick Start
 
@@ -111,6 +115,20 @@ The `sandbox/` directory is git-ignored. Clean it regularly:
 ```bash
 rm -rf sandbox/*
 ```
+
+## 🌐 Portfolio Site
+
+This workspace includes a GitHub Pages portfolio to showcase your experiments online.
+
+### Quick Setup
+1. Update `docs/index.html` with your GitHub username and repo name
+2. Enable GitHub Pages in repository Settings → Pages
+3. Deploy from `main` branch and `/docs` folder
+
+See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) for detailed instructions.
+
+### Adding Experiments
+When you create a new experiment, add it to the portfolio by updating the `experiments` array in `docs/index.html`.
 
 ## 📚 Tips
 
