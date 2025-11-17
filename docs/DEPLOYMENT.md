@@ -31,41 +31,37 @@ Your site will be available at: `https://kody-w.github.io/Nov17/`
 
 ## Adding New Experiments
 
-When you complete a new experiment and add it to the `experiments/` folder, update the portfolio:
+The portfolio automatically discovers and displays experiments from your repository!
 
-1. Open `docs/index.html`
-2. Find the `experiments` array (around line 415)
-3. Add your new experiment:
+When you complete a new experiment:
 
-```javascript
-const experiments = [
-    {
-        title: "String Concatenation Performance",
-        date: "2025-11-17",
-        description: "Performance comparison of different string concatenation methods in Python",
-        tags: ["Performance", "Python", "Benchmarking"],
-        file: "2025-11-17_string_concat_perf.py"
-    },
-    // Add your new experiment here
-    {
-        title: "Your Experiment Title",
-        date: "2025-11-20",
-        description: "Brief description of what this experiment does",
-        tags: ["Tag1", "Tag2", "Tag3"],
-        file: "2025-11-20_your_experiment.py"
-    }
-];
-```
+1. **Name it with the date format**: `YYYY-MM-DD_experiment_name.py`
 
-4. Commit and push to GitHub:
+2. **Add a description** at the top of the file:
+   ```python
+   """
+   Brief description of what this experiment does
+   """
+   ```
+   or use a comment:
+   ```python
+   # Brief description of what this experiment does
+   ```
 
-```bash
-git add docs/index.html experiments/2025-11-20_your_experiment.py
-git commit -m "Add new experiment: Your Experiment Title"
-git push
-```
+3. **Commit and push**:
+   ```bash
+   git add experiments/2025-11-20_your_experiment.py
+   git commit -m "Add experiment: Your Experiment Title"
+   git push
+   ```
 
-GitHub Pages will automatically rebuild your site (usually within 1-2 minutes).
+The portfolio will automatically:
+- Discover your new experiment
+- Extract the description from your docstring/comment
+- Auto-generate tags based on filename and content
+- Display it on your site within 1-2 minutes
+
+**No manual updates to HTML needed!**
 
 ## Customization
 

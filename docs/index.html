@@ -383,24 +383,8 @@
                 <h2>Utilities</h2>
                 <p>Reusable helper functions and tools for rapid development</p>
             </div>
-            <div class="utility-grid">
-                <div class="utility-card">
-                    <h3>Timer</h3>
-                    <p>Benchmark code performance with decorator or context manager</p>
-                    <code>from utils.timer import timer</code>
-                    <code>@timer<br>def my_function():<br>    pass</code>
-                </div>
-                <div class="utility-card">
-                    <h3>Logger</h3>
-                    <p>Simple logging with file and console output</p>
-                    <code>from utils.logger import setup_logger</code>
-                    <code>log = setup_logger("name")<br>log.info("message")</code>
-                </div>
-                <div class="utility-card">
-                    <h3>Quick Test</h3>
-                    <p>Basic test template for rapid prototyping</p>
-                    <code>python utils/quick_test.py</code>
-                </div>
+            <div id="utilities-grid" class="utility-grid">
+                <!-- Utilities will be loaded dynamically -->
             </div>
         </section>
 
@@ -410,34 +394,8 @@
                 <h2>Templates</h2>
                 <p>Quick-start templates for common development tasks</p>
             </div>
-            <div class="grid">
-                <div class="card">
-                    <h3>Data Analysis</h3>
-                    <p>Template for data analysis tasks with common imports and structure</p>
-                    <div class="card-tags">
-                        <span class="tag">Python</span>
-                        <span class="tag">Data Science</span>
-                    </div>
-                    <a href="#" class="card-link view-template" data-file="data_analysis.py">View Template →</a>
-                </div>
-                <div class="card">
-                    <h3>API Client</h3>
-                    <p>Template for API testing and client development</p>
-                    <div class="card-tags">
-                        <span class="tag">Python</span>
-                        <span class="tag">API</span>
-                    </div>
-                    <a href="#" class="card-link view-template" data-file="api_client.py">View Template →</a>
-                </div>
-                <div class="card">
-                    <h3>Algorithm Test</h3>
-                    <p>Template for comparing algorithm implementations and performance</p>
-                    <div class="card-tags">
-                        <span class="tag">Python</span>
-                        <span class="tag">Algorithms</span>
-                    </div>
-                    <a href="#" class="card-link view-template" data-file="algorithm_test.py">View Template →</a>
-                </div>
+            <div id="templates-grid" class="grid">
+                <!-- Templates will be loaded dynamically -->
             </div>
         </section>
 
@@ -519,66 +477,343 @@
             event.target.classList.add('active');
         }
 
-        // Experiment data structure
-        const experiments = [
-            {
-                title: "String Concatenation Performance",
-                date: "2025-11-17",
-                description: "Performance comparison of different string concatenation methods in Python",
-                tags: ["Performance", "Python", "Benchmarking"],
-                file: "2025-11-17_string_concat_perf.py"
-            }
-            // Add more experiments here as you create them
-            // {
-            //     title: "Your Experiment Name",
-            //     date: "YYYY-MM-DD",
-            //     description: "Description of what this experiment does",
-            //     tags: ["tag1", "tag2"],
-            //     file: "YYYY-MM-DD_experiment_name.py"
-            // }
-        ];
+        // GitHub API endpoints
+        const API_BASE = `https://api.github.com/repos/${GITHUB_USER}/${REPO_NAME}`;
 
-        // Load experiments
-        function loadExperiments() {
-            const grid = document.getElementById('experiments-grid');
+        // Parse experiment filename to extract metadata
+        function parseExperimentFile(filename) {
+            // Expected format: YYYY-MM-DD_experiment_name.py
+            const match = filename.match(/^(\d{4}-\d{2}-\d{2})_(.+)\.py$/);
+            if (!match) return null;
 
-            if (experiments.length === 0) {
-                grid.innerHTML = `
-                    <div class="empty-state">
-                        <p>No experiments yet. Check back soon!</p>
-                    </div>
-                `;
-                return;
-            }
+            const [_, date, name] = match;
+            const title = name
+                .split('_')
+                .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                .join(' ');
 
-            grid.innerHTML = experiments.map(exp => `
-                <div class="card">
-                    <div class="card-header">
-                        <h3>${exp.title}</h3>
-                        <span class="card-date">${exp.date}</span>
-                    </div>
-                    <p>${exp.description}</p>
-                    <div class="card-tags">
-                        ${exp.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
-                    </div>
-                    <a href="${GITHUB_REPO}/blob/main/experiments/${exp.file}"
-                       class="card-link"
-                       target="_blank">View Code →</a>
-                </div>
-            `).join('');
+            return { date, title, filename };
         }
 
-        // Handle template links
-        document.querySelectorAll('.view-template').forEach(link => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                const file = e.target.dataset.file;
-                window.open(`${GITHUB_REPO}/blob/main/templates/${file}`, '_blank');
-            });
-        });
+        // Fetch file content and extract description from docstring
+        async function getFileDescription(path) {
+            try {
+                const response = await fetch(`${API_BASE}/contents/${path}`);
+                if (!response.ok) return null;
+
+                const data = await response.json();
+                const content = atob(data.content); // Decode base64
+
+                // Try to extract docstring (first """...""" or '''...''')
+                const docstringMatch = content.match(/^["']{3}([\s\S]*?)["']{3}/m);
+                if (docstringMatch) {
+                    return docstringMatch[1].trim().split('\n')[0]; // First line of docstring
+                }
+
+                // Try to extract first comment
+                const commentMatch = content.match(/^#\s*(.+)$/m);
+                if (commentMatch) {
+                    return commentMatch[1].trim();
+                }
+
+                return 'No description available';
+            } catch (error) {
+                return 'No description available';
+            }
+        }
+
+        // Auto-detect tags from filename and content
+        function detectTags(filename, description = '') {
+            const tags = ['Python']; // All experiments are Python
+            const text = (filename + ' ' + description).toLowerCase();
+
+            if (text.includes('perf') || text.includes('benchmark') || text.includes('speed')) {
+                tags.push('Performance');
+            }
+            if (text.includes('algorithm') || text.includes('sort') || text.includes('search')) {
+                tags.push('Algorithms');
+            }
+            if (text.includes('api') || text.includes('http') || text.includes('request')) {
+                tags.push('API');
+            }
+            if (text.includes('data') || text.includes('analysis') || text.includes('pandas')) {
+                tags.push('Data Science');
+            }
+            if (text.includes('test')) {
+                tags.push('Testing');
+            }
+            if (text.includes('ml') || text.includes('machine learning') || text.includes('model')) {
+                tags.push('Machine Learning');
+            }
+
+            return tags;
+        }
+
+        // Load experiments dynamically from GitHub
+        async function loadExperiments() {
+            const grid = document.getElementById('experiments-grid');
+            grid.innerHTML = '<div class="empty-state"><p>Loading experiments...</p></div>';
+
+            try {
+                const response = await fetch(`${API_BASE}/contents/experiments`);
+                if (!response.ok) throw new Error('Failed to fetch experiments');
+
+                const files = await response.json();
+                const pythonFiles = files.filter(file =>
+                    file.type === 'file' && file.name.endsWith('.py')
+                );
+
+                if (pythonFiles.length === 0) {
+                    grid.innerHTML = `
+                        <div class="empty-state">
+                            <p>No experiments yet. Check back soon!</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                // Parse and fetch descriptions for each experiment
+                const experiments = await Promise.all(
+                    pythonFiles.map(async (file) => {
+                        const parsed = parseExperimentFile(file.name);
+                        if (!parsed) return null;
+
+                        const description = await getFileDescription(`experiments/${file.name}`);
+                        const tags = detectTags(file.name, description);
+
+                        return {
+                            title: parsed.title,
+                            date: parsed.date,
+                            filename: file.name,
+                            description,
+                            tags,
+                            size: file.size
+                        };
+                    })
+                );
+
+                // Filter out null entries and sort by date (newest first)
+                const validExperiments = experiments
+                    .filter(exp => exp !== null)
+                    .sort((a, b) => b.date.localeCompare(a.date));
+
+                // Render experiments
+                grid.innerHTML = validExperiments.map(exp => `
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>${exp.title}</h3>
+                            <span class="card-date">${exp.date}</span>
+                        </div>
+                        <p>${exp.description}</p>
+                        <div class="card-tags">
+                            ${exp.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                        </div>
+                        <a href="${GITHUB_REPO}/blob/main/experiments/${exp.filename}"
+                           class="card-link"
+                           target="_blank">View Code →</a>
+                    </div>
+                `).join('');
+
+            } catch (error) {
+                console.error('Error loading experiments:', error);
+                grid.innerHTML = `
+                    <div class="empty-state">
+                        <p>Unable to load experiments. Please check back later.</p>
+                        <p style="font-size: 0.9rem; color: #999; margin-top: 0.5rem;">
+                            Error: ${error.message}
+                        </p>
+                    </div>
+                `;
+            }
+        }
+
+        // Get template metadata from filename
+        function getTemplateInfo(filename) {
+            const name = filename.replace('.py', '');
+            const templates = {
+                'data_analysis': {
+                    title: 'Data Analysis',
+                    description: 'Template for data analysis tasks with common imports and structure',
+                    tags: ['Python', 'Data Science']
+                },
+                'api_client': {
+                    title: 'API Client',
+                    description: 'Template for API testing and client development',
+                    tags: ['Python', 'API']
+                },
+                'algorithm_test': {
+                    title: 'Algorithm Test',
+                    description: 'Template for comparing algorithm implementations and performance',
+                    tags: ['Python', 'Algorithms']
+                }
+            };
+
+            // Return predefined info or generate from filename
+            if (templates[name]) {
+                return templates[name];
+            }
+
+            // Auto-generate from filename
+            const title = name
+                .split('_')
+                .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                .join(' ');
+
+            return {
+                title,
+                description: `Template for ${title.toLowerCase()} tasks`,
+                tags: ['Python']
+            };
+        }
+
+        // Load templates dynamically
+        async function loadTemplates() {
+            const grid = document.getElementById('templates-grid');
+            grid.innerHTML = '<div class="empty-state"><p>Loading templates...</p></div>';
+
+            try {
+                const response = await fetch(`${API_BASE}/contents/templates`);
+                if (!response.ok) throw new Error('Failed to fetch templates');
+
+                const files = await response.json();
+                const pythonFiles = files.filter(file =>
+                    file.type === 'file' && file.name.endsWith('.py')
+                );
+
+                if (pythonFiles.length === 0) {
+                    grid.innerHTML = `
+                        <div class="empty-state">
+                            <p>No templates available.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                const templates = pythonFiles.map(file => {
+                    const info = getTemplateInfo(file.name);
+                    return {
+                        filename: file.name,
+                        ...info
+                    };
+                });
+
+                grid.innerHTML = templates.map(tmpl => `
+                    <div class="card">
+                        <h3>${tmpl.title}</h3>
+                        <p>${tmpl.description}</p>
+                        <div class="card-tags">
+                            ${tmpl.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                        </div>
+                        <a href="${GITHUB_REPO}/blob/main/templates/${tmpl.filename}"
+                           class="card-link"
+                           target="_blank">View Template →</a>
+                    </div>
+                `).join('');
+
+            } catch (error) {
+                console.error('Error loading templates:', error);
+                grid.innerHTML = `
+                    <div class="empty-state">
+                        <p>Unable to load templates.</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Get utility metadata from filename
+        function getUtilityInfo(filename) {
+            const name = filename.replace('.py', '');
+            const utilities = {
+                'timer': {
+                    title: 'Timer',
+                    description: 'Benchmark code performance with decorator or context manager',
+                    usage: ['from utils.timer import timer', '@timer\ndef my_function():\n    pass']
+                },
+                'logger': {
+                    title: 'Logger',
+                    description: 'Simple logging with file and console output',
+                    usage: ['from utils.logger import setup_logger', 'log = setup_logger("name")\nlog.info("message")']
+                },
+                'quick_test': {
+                    title: 'Quick Test',
+                    description: 'Basic test template for rapid prototyping',
+                    usage: ['python utils/quick_test.py']
+                }
+            };
+
+            // Return predefined info or generate from filename
+            if (utilities[name]) {
+                return utilities[name];
+            }
+
+            // Auto-generate from filename
+            const title = name
+                .split('_')
+                .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                .join(' ');
+
+            return {
+                title,
+                description: `Utility for ${title.toLowerCase()}`,
+                usage: [`from utils.${name} import *`]
+            };
+        }
+
+        // Load utilities dynamically
+        async function loadUtilities() {
+            const grid = document.getElementById('utilities-grid');
+            grid.innerHTML = '<div class="empty-state"><p>Loading utilities...</p></div>';
+
+            try {
+                const response = await fetch(`${API_BASE}/contents/utils`);
+                if (!response.ok) throw new Error('Failed to fetch utilities');
+
+                const files = await response.json();
+                const pythonFiles = files.filter(file =>
+                    file.type === 'file' &&
+                    file.name.endsWith('.py') &&
+                    file.name !== '__init__.py'
+                );
+
+                if (pythonFiles.length === 0) {
+                    grid.innerHTML = `
+                        <div class="empty-state">
+                            <p>No utilities available.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                const utilities = pythonFiles.map(file => {
+                    const info = getUtilityInfo(file.name);
+                    return {
+                        filename: file.name,
+                        ...info
+                    };
+                });
+
+                grid.innerHTML = utilities.map(util => `
+                    <div class="utility-card">
+                        <h3>${util.title}</h3>
+                        <p>${util.description}</p>
+                        ${util.usage.map(code => `<code>${code.replace(/\n/g, '<br>')}</code>`).join('')}
+                    </div>
+                `).join('');
+
+            } catch (error) {
+                console.error('Error loading utilities:', error);
+                grid.innerHTML = `
+                    <div class="empty-state">
+                        <p>Unable to load utilities.</p>
+                    </div>
+                `;
+            }
+        }
 
         // Initialize
         loadExperiments();
+        loadTemplates();
+        loadUtilities();
     </script>
 </body>
 </html>

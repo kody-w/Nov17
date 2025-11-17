@@ -128,17 +128,23 @@ rm -rf sandbox/*
 
 ## 🌐 Portfolio Site
 
-This workspace includes a GitHub Pages portfolio to showcase your experiments online.
+This workspace includes a **dynamic GitHub Pages portfolio** that automatically showcases your experiments!
 
 ### Quick Setup
-1. Update `docs/index.html` with your GitHub username and repo name
+1. Run `python3 setup.py` to configure repository details
 2. Enable GitHub Pages in repository Settings → Pages
 3. Deploy from `main` branch and `/docs` folder
 
 See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) for detailed instructions.
 
-### Adding Experiments
-When you create a new experiment, add it to the portfolio by updating the `experiments` array in `docs/index.html`.
+### Dynamic Features
+The portfolio automatically:
+- Discovers experiments from the `experiments/` folder
+- Extracts descriptions from docstrings or comments
+- Auto-generates tags based on content
+- Displays templates and utilities from your repo
+
+**Just push code - the portfolio updates automatically!**
 
 ## 📚 Tips
 

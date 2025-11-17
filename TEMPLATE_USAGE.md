@@ -118,20 +118,24 @@ When your experiment is complete:
 mv sandbox/my_experiment.py experiments/2025-11-20_my_experiment.py
 ```
 
-### 4. Update Portfolio Site
-
-Edit `docs/index.html` and add to the `experiments` array (around line 420):
-```javascript
-{
-    title: "Your Experiment Title",
-    date: "2025-11-20",
-    description: "Brief description of what this does",
-    tags: ["Tag1", "Tag2", "Tag3"],
-    file: "2025-11-20_your_experiment.py"
-}
+Add a docstring or comment at the top to describe what it does:
+```python
+"""
+Brief description of what this experiment does
+"""
+# or
+# Brief description of what this experiment does
 ```
 
-Commit and push - GitHub Pages auto-deploys!
+### 4. Portfolio Auto-Updates
+
+Commit and push - the portfolio automatically:
+- Discovers your new experiment from the experiments/ folder
+- Extracts the description from your docstring or first comment
+- Auto-generates tags based on filename and content
+- Displays it on your portfolio site
+
+No manual updates needed!
 
 ## File Naming Convention
 
